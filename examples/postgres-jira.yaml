@@ -1,0 +1,105 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jirapg-volume-claim
+spec:
+# we set datera as the default storage class
+# so no need to specify a class
+# storageClassName: datera
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jirapg
+spec:
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: jirapg
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: jirapg
+  name: jirapg
+  namespace:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jirapg
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: jirapg
+    spec:
+      initContainers:
+      - name: remove-lost-found
+        image: busybox:1.25.0
+        command: ["rm", "-rf", "/var/lib/postgresql/data/lost+found"]
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: data
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: jiradbuser
+        - name: POSTGRES_PASSWORD
+          value: jiradbuser
+        - name: POSTGRES_DB
+          value: jiradb
+        image: postgres:9.6.6
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command: ["pg_isready", "-U", "$(POSTGRES_USER)", "-d", "$(POSTGRES_DB)"]
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: postgres
+        ports:
+        - containerPort: 5432
+          name: postgres
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "$(POSTGRES_USER)", "-d", "$(POSTGRES_DB)"]
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: data
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: jirapg-volume-claim
