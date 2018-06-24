@@ -1,0 +1,21 @@
+kind: Persistent Volume
+apiVersion: v1
+metadata:
+  name: datera-volume
+  labels:
+    manual: 'true'
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  flexVolume:
+    driver: datera/iscsi
+    fsType: xfs
+    secretRef:
+      name: datera
+    options:
+      template: basic
+      retainPolicy: never
+      volumeID: datera-kube-volume

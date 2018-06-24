@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul
+  labels:
+    app: consul
+spec:
+  ports:
+  - name: rpc
+    port: 8300
+    targetPort: 8300
+  - name: lan
+    port: 8301
+    targetPort: 8301
+  - name: wan
+    port: 8302
+    targetPort: 8302
+  - name: http
+    port: 8500
+    targetPort: 8500
+  - name: dns
+    targetPort: 8600
+    port: 8600
+  clusterIP: None
+  selector:
+    app: consul

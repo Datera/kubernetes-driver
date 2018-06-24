@@ -1,0 +1,61 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: datera
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: datera-installer-agent
+  namespace: datera
+  labels:
+    tier: driver-monitoring
+    app: datera-installer-agent
+    version: v1
+spec:
+  template:
+    metadata:
+      labels:
+        name: datera-installer
+    spec:
+      hostPID: true
+      hostIPC: true
+      hostNetwork: true
+      containers:
+        - resources:
+            requests:
+              cpu: 0.15
+          securityContext:
+            privileged: true
+          env:
+            - name: DATERA_DRIVER_PATH
+              value: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/datera~iscsi"
+            - name: DATERA_INSTALLER_LOGFILE
+              value: "/log/datera-installer.log"
+          imagePullPolicy: Always
+          image: dateraio/kube-dev:latest
+          name: datera-installer
+          command: [ "bash", "-c", "/datera-driver/datera-daemon.sh" ]
+          volumeMounts:
+            - name: datera-installer
+              mountPath: /datera
+            - name: udev-rules
+              mountPath: /udev-rules
+            - name: scripts
+              mountPath: /scripts
+            - name: log
+              mountPath: /log
+      volumes:
+        - name: datera-installer
+          hostPath:
+              path: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/datera~iscsi
+        - name: udev-rules
+          hostPath:
+              path: /etc/udev/rules.d
+        - name: scripts
+          hostPath:
+              path: /sbin/
+        - name: log
+          hostPath:
+              path: /var/log

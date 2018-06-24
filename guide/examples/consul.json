@@ -1,0 +1,12 @@
+{
+  "datacenter": "kubernetes",
+  "log_level": "DEBUG",
+  "data_dir": "/consul/data",
+  "server": true,
+  "bootstrap_expect": 3,
+  "retry_join": ["consul-0.consul.default.svc.cluster.local","consul-1.consul.default.svc.cluster.local","consul-2.consul.default.svc.cluster.local"],
+  "client_addr": "0.0.0.0",
+  "bind_addr": "0.0.0.0",
+  "domain": "cluster.local",
+  "ui": true
+}

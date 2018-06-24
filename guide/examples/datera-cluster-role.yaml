@@ -1,0 +1,26 @@
+# Datera Kubernetes RBAC Example
+# This is an example of RBAC settings for the Datera dynamic provisioner
+# The RBAC capabilities of Kubenetes is vast and this is just a reference
+# Our expectation is this will provide guidance for those customers leveraging RBAC
+# As this is an example with no support from Datera
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: datera-storage-provisioner
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]

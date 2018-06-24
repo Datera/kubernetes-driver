@@ -1,0 +1,77 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: consul
+  namespace:
+  labels:
+    type: statefulset
+spec:
+  serviceName: consul
+  replicas: 3
+  selector:
+    matchLabels:
+      app: consul
+  template:
+    metadata:
+      labels:
+        app: consul
+    spec:
+      initContainers:
+      - name: consul-config-data
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c", "cp /readonly/consul.json /config && sed -i s/default/$(POD_NAMESPACE)/g /config/consul.json"]
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: readonly
+          mountPath: /readonly
+          readOnly: true
+        - name: config
+          mountPath: /config
+          readOnly: false
+      containers:
+      - name: consul
+        image: consul:1.0.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: rpc
+          containerPort: 8300
+        - name: lan
+          containerPort: 8301
+        - name: wan
+          containerPort: 8302
+        - name: http
+          containerPort: 8500
+        - name: dns
+          containerPort: 8600
+        volumeMounts:
+        - name: data
+          mountPath: /consul/data
+          readOnly: false
+        - name: config
+          mountPath: /consul/config
+          readOnly: false
+        args:
+        - consul
+        - agent
+        - -config-file=/consul/config/consul.json
+      volumes:
+        - name: readonly
+          configMap:
+            name: consulconfig
+        - name: config
+          emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: datera

@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: consul
+spec:
+  rules:
+  - host: consul.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: consul-ui
+          servicePort: 8500

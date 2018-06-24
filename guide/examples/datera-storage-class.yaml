@@ -1,0 +1,13 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  labels: 
+  name: datera
+  namespace: 
+provisioner: datera.io/provisioner-datera
+reclaimPolicy: Delete
+parameters:
+  template: basic
+  secretName: datera
+  secretNamespace: datera
+  fsType: xfs

@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: datera-storage-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: datera-k8s-external-provisioner
+    namespace: datera
+roleRef:
+  kind: ClusterRole
+  name: datera-storage-provisioner
+  apiGroup: rbac.authorization.k8s.io
