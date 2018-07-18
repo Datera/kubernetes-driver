@@ -31,7 +31,13 @@ and deploy the plugin as stated in the [Deploying the Datera Driver for Kubernet
 ## Install the Datera dynamic provisioner and create a Storage Class
 Datera supports both the manual and dynamic storage provisioning model of Kubernetes. In this section, for a more smooth user's experience, we're going to use the dynamic model. Install the Datera dynamic storage provisioner and create the Storage Class as stated in the [Provisioning Datera Storage in Kubernetes](../provisioning.md) section of this guide.
 
-Please, note that OpenShift comes with RBAC enabled and you need to create a set of permissions before to attempt to install the Datera provisioner. Refer to the [Working with Role Based Access control (RBAC) enabled](../rbac.md) section of this guide.
+Please, note that OpenShift comes with security enabled and you need to give permissions to the related service account before to attempt to install the Datera dynamic provisioner.
+
+```bash
+oc adm policy add-cluster-role-to-user system:persistent-volume-provisioner system:serviceaccount:datera:default
+oc adm policy add-cluster-role-to-user system:controller:persistent-volume-binder system:serviceaccount:datera:default
+```
+Also make sure the secret containing the credentials used to access the Datera platform is accessible to the user, e.g. it is in the current project (namespace) where the user is working.
 
 ## Create a MySQL template in OpenShift
 
