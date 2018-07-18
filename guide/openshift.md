@@ -21,7 +21,9 @@ We're assuming you already have a running OpenShift setup in place before to att
 Datera volume plugin gets deployed as a Kubernetes DaemonSet with pods running in priviledged mode. Add the service account  in the ``datera`` namespace to the privileged security context
 
 ```bash
-oc adm policy add-scc-to-user privileged system:serviceaccount:datera:default
+oc adm policy \
+   add-scc-to-user privileged \
+   system:serviceaccount:datera:default
 ```
 
 and deploy the plugin as stated in the [Deploying the Datera Driver for Kubernetes](../deploying.md) section of this guide.
@@ -34,10 +36,17 @@ Datera supports both the manual and dynamic storage provisioning model of Kubern
 Please, note that OpenShift comes with security enabled and you need to give permissions to the related service account before to attempt to install the Datera dynamic provisioner.
 
 ```bash
-oc adm policy add-cluster-role-to-user system:persistent-volume-provisioner system:serviceaccount:datera:default
-oc adm policy add-cluster-role-to-user system:controller:persistent-volume-binder system:serviceaccount:datera:default
+oc adm policy \
+   add-cluster-role-to-user \
+   system:persistent-volume-provisioner \
+   system:serviceaccount:datera:default
+   
+oc adm policy \
+   add-cluster-role-to-user \
+   system:controller:persistent-volume-binder \
+   system:serviceaccount:datera:default
 ```
-Also make sure the secret containing the credentials used to access the Datera platform is accessible to the user, e.g. it is in the current project (namespace) where the user is working.
+Also make sure the secret containing the credentials used to login the Datera platform is accessible by the user, e.g. it is in the current project (namespace) where the user is working.
 
 ## Create a MySQL template in OpenShift
 
