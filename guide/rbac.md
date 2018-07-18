@@ -99,3 +99,10 @@ Create the binding
     $ kubectl create -f datera-cluster-role-binding.yaml
 
 The Datera dynamic provisioner should now have all the permissions to work in a Kubernetes environment with RBAC enabled.
+
+## RBAC authorization for users working with Datera
+The user going to create claims bound to Datera volumes needs to access the secret used to login to the Datera system. If you created that secret in the ``datera`` namespaces, make sure the user has the permissions to read secrets in that namespace.
+
+
+
+
