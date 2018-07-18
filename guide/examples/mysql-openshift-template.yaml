@@ -180,7 +180,7 @@ parameters:
 - name: MYSQL_DATABASE
   displayName: MySQL Database Name
   description: Name of the MySQL database accessed.
-  value: sampledb
+  value: employees
   required: true
 - name: VOLUME_CAPACITY
   displayName: Volume Capacity
