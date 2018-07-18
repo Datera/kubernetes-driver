@@ -99,7 +99,7 @@ oc new-app --template=mysql-datera-persistent
      
             Username: user305
             Password: TTg2JAb1233XRkf6
-       Database Name: sampledb
+       Database Name: employees
       Connection URL: mysql://mysql:3306/
 
      * With parameters:
@@ -109,7 +109,7 @@ oc new-app --template=mysql-datera-persistent
         * MySQL Connection Username=user305 # generated
         * MySQL Connection Password=TTg2JAb1233XRkf6 # generated
         * MySQL root user Password=sSgh0hXquEr2SgOc # generated
-        * MySQL Database Name=sampledb
+        * MySQL Database Name=employees
         * Volume Capacity=10Gi
         * Datera Storage Class=datera
         * Version of MySQL Image=5.7
@@ -144,7 +144,7 @@ The container in the pod should take a minute or two to come up
     NAME            READY     STATUS    RESTARTS   AGE
     mysql-1-lrvx7   1/1       Running   0          2m
 
-After the container is running, login to the container and verify the storage has been connected by checking the container
+After the container is running, login to the container and verify the storage has been connected by checking the container file system
 
     oc exec -it mysql-1-lrvx7 bash
     
@@ -160,7 +160,7 @@ You can see that the ``/var/lib/mysql/data directory`` is mounted to the 10GB Da
 
 Login to the database, create a table and add some data
 
-    bash-4.2$ mysql -D employee -u root
+    bash-4.2$ mysql -D employees -u root
     mysql> CREATE TABLE IF NOT EXISTS employees (
                   id INT(11) NOT NULL AUTO_INCREMENT,
                   name VARCHAR(45) DEFAULT NULL,
