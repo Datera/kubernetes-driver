@@ -1,4 +1,4 @@
-# How to Run a HA MySQL Database on Red Hat OpenShift with Datera
+# Run a HA MySQL database on Red Hat OpenShift with Datera
 OpenShift Container Platform is Red Hat’s on-premises and cloud container management platform. Many customers have been using OpenShift to run stateless applications, but running stateful applications like databases may be a challenge on OpenShift. 
 
 Red Hat offers a portfolio of enterprise-class storage solutions, but neither GlusterFS (the basis for what Red Hat calls “Container Native Storage”) or Ceph were designed to run high-performance low-latency databases. GlusterFS and Ceph are great projects, but they both have specific drawbacks for database workloads.
@@ -26,3 +26,4 @@ We're assuming you already have a running OpenShift setup in place before to att
 ## Deploy a MySQL application from the template
 
 ## Demonstrate MySQL HA operations
+
