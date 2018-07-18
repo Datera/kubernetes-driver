@@ -10,3 +10,4 @@
 8. [Working with StatefulSets and Datera](./working.md)
 9. [Role Based Access Control](./rbac.md)
 10. [Conclusion](./conclusion.md)
+11. [Appendix (OpenShift)](./openshift.md)
