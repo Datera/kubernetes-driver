@@ -14,7 +14,6 @@ In this section, we're going to document how to setup the Openshift Registry usi
 5. [Test data persistence](#test-data-persistence)
 
 ## Build the Minio image
-The default Minio image available on the Docker Hub cannot run on OpenShift due to the security constraints enforced by Openshift. To run Minio, we need to leave Openshift to build its own image and store it on the local registry.
 
 ## Run Minio service with Datera
 
