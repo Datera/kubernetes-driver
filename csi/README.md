@@ -94,6 +94,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: datera-secret  # <-- This is the name that will be referenced later
+  namespace: kube-system # <-- Needs to be in same the namespace as plugin
 type: Opaque
 data:
   username: eW91ci11c2VybmFtZQ==
