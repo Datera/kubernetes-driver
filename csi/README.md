@@ -66,6 +66,48 @@ Name                   |     Default
 ``delete_on_unmount``  |     ``false``
 
 
+Now install the plugin
+
 ```bash
 $ kubectl create -f csi/csi-datera-v0.1.0.yaml
+```
+
+## Secrets (Optional)
+
+Create a secrets file to store login credentials
+
+First generate your base64 encoded username and password
+
+```bash
+$ echo -n 'your-username' | base64
+eW91ci11c2VybmFtZQ==
+```
+```bash
+$ echo -n 'your-username' | base64
+eW91ci1wYXNzd29yZA==
+```
+
+Then put them in the example-secret.yaml file
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: datera-secret  # <-- This is the name that will be referenced later
+type: Opaque
+data:
+  username: eW91ci11c2VybmFtZQ==
+  password: eW91ci1wYXNzd29yZA==
+```
+
+Create the secrets
+
+```bash
+$ kubectl create -f my-secrets.yaml
+```
+
+Then install the plugin using a "secrets" yaml
+
+```bash
+$ kubectl create -f csi/csi-datera-secrets-v0.1.0.yaml
 ```
