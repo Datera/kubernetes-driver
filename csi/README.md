@@ -83,7 +83,7 @@ $ echo -n 'your-username' | base64
 eW91ci11c2VybmFtZQ==
 ```
 ```bash
-$ echo -n 'your-username' | base64
+$ echo -n 'your-password' | base64
 eW91ci1wYXNzd29yZA==
 ```
 
