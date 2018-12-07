@@ -170,6 +170,7 @@ spec:
       hostNetwork: true
       containers:
         - name: csi-provisioner
+          imagePullPolicy: Always
           image: quay.io/k8scsi/csi-provisioner:v1.0-canary
           args:
             - "--provisioner=dsp.csi.datera.io"
@@ -177,44 +178,46 @@ spec:
             - "--v=5"
           env:
             - name: DAT_SOCKET
-              value: unix:///var/lib/csi/io.daterainc.csi.dsp/csi.sock
-          imagePullPolicy: "IfNotPresent"
+              value: unix:///var/lib/csi/dsp.csi.daterainc.io/csi.sock
           volumeMounts:
             - name: socket-dir
               mountPath: /var/lib/csi/
         - name: csi-attacher
+          imagePullPolicy: Always
           image: quay.io/k8scsi/csi-attacher:v1.0.0
           args:
             - "--csi-address=$(DAT_SOCKET)"
             - "--v=5"
           env:
             - name: DAT_SOCKET
-              # value: unix:///var/lib/csi/io.daterainc.csi.dsp/csi.sock
-              value: /var/lib/csi/io.daterainc.csi.dsp/csi.sock
+              # value: unix:///var/lib/csi/dsp.csi.daterainc.io/csi.sock
+              value: /var/lib/csi/dsp.csi.daterainc.io/csi.sock
           volumeMounts:
             - name: socket-dir
               mountPath: /var/lib/csi/
         - name: csi-snapshotter
+          imagePullPolicy: Always
           image: quay.io/k8scsi/csi-snapshotter:v1.0-canary
           args:
             - "--csi-address=$(DAT_SOCKET)"
             - "--v=5"
           env:
             - name: DAT_SOCKET
-              #value: unix:///var/lib/csi/io.daterainc.csi.dsp/csi.sock
-              value: /var/lib/csi/io.daterainc.csi.dsp/csi.sock
+              #value: unix:///var/lib/csi/dsp.csi.daterainc.io/csi.sock
+              value: /var/lib/csi/dsp.csi.daterainc.io/csi.sock
           imagePullPolicy: "IfNotPresent"
           volumeMounts:
             - name: socket-dir
               mountPath: /var/lib/csi/
         - name: dat-csi-plugin-controller
+          imagePullPolicy: Always
           image: dateraiodev/dat-csi-plugin:latest
           command: [ "/bin/sh", "-c", "/bin/dat-csi-plugin 2>&1 | tee /var/log/driver.log" ]
           env:
             - name: DAT_TYPE
               value: conident
             - name: DAT_SOCKET
-              value: unix:///var/lib/csi/io.daterainc.csi.dsp/csi.sock
+              value: unix:///var/lib/csi/dsp.csi.daterainc.io/csi.sock
             - name: DAT_MGMT
               value: 1.1.1.1
             - name: DAT_USER
@@ -296,6 +299,7 @@ spec:
       hostNetwork: true
       containers:
         - name: driver-registrar
+          imagePullPolicy: Always
           image: quay.io/k8scsi/driver-registrar:v1.0-canary
           args:
             - "--v=5"
@@ -305,10 +309,10 @@ spec:
             - "--pod-info-mount-version=\"v1\""
           env:
             - name: DAT_SOCKET
-              #value: unix:///var/lib/csi/io.daterainc.csi.dsp/csi.sock
+              #value: unix:///var/lib/csi/dsp.csi.daterainc.io/csi.sock
               value: /csi/csi.sock
             - name: REG_SOCKET
-              value: /var/lib/kubelet/plugins_registry/io.daterainc.csi.dsp/csi.sock
+              value: /var/lib/kubelet/plugins_registry/dsp.csi.daterainc.io/csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
@@ -332,6 +336,7 @@ spec:
             - name: libmod
               mountPath: /lib/modules
         - name: dat-csi-plugin-node
+          imagePullPolicy: Always
           securityContext:
             privileged: true
             capabilities:
@@ -350,7 +355,7 @@ spec:
             - name: DAT_MGMT
               value: 1.1.1.1
             - name: DAT_USER
-              value: admin
+              value: password
             - name: DAT_PASS
               value: password
             - name: DAT_TENANT
@@ -379,7 +384,7 @@ spec:
       volumes:
         - name: socket-dir
           hostPath:
-            path: /var/lib/kubelet/plugins_registry/io.daterainc.csi.dsp
+            path: /var/lib/kubelet/plugins_registry/dsp.csi.daterainc.io
             type: DirectoryOrCreate
         - name: kubelet-plugins-k
           hostPath:
